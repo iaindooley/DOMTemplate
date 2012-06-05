@@ -8,26 +8,36 @@ class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	private $keep_prolog = false;
 	
-	public function __construct ($filepath, $NS='', $NS_URI='') {
+	public function __construct ($inputString, $NS='', $NS_URI='') {
 		//get just the template text to begin with
-		$xml = file_get_contents ($filepath);
+		$xml = $inputString;
 		//does this file have an XML prolog? if so, we’ll keep it as-is in the output
 		if (substr_compare ($xml, '<?xml', 0, 4, true) === 0) $this->keep_prolog = true;
 		
 		//load the template file to work with. this must be valid XML (but not XHTML)
 		$this->DOMDocument = new DOMDocument ();
-		$this->DOMDocument->loadXML (
+		if(!$this->DOMDocument->loadXML (
 			//if the document doesn't already have an XML prolog, add one to avoid mangling unicode characters
 			//see <php.net/manual/en/domdocument.loadxml.php#94291>
 			(!$this->keep_prolog ? "<?xml version=\"1.0\" encoding=\"utf-8\"?>" : '').
 			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
 			self::html_entity_decode ($xml), @LIBXML_COMPACT | @LIBXML_NONET
-		) or trigger_error (
+		)){
+			throw new Exception("Template is invalid XML");
+		}
+		// this trigger_error has been here before, but this kind of error does not seem to be catchable.
+		// A handler can be defined with register_shutdown_function() but this is not what we want. Or am I wrong?
+		/*trigger_error (
 			"Template '$filepath' is invalid XML", E_USER_ERROR
-		);
+		);*/
 		//set the root node for all xpath searching
 		//(handled all internally by `DOMTemplateNode`)
 		parent::__construct ($this->DOMDocument->documentElement, $NS, $NS_URI);
+	}
+	
+	public static function fromFile($filename){
+		$inputString = file_get_contents ($filename);
+		return new DOMTemplate($inputString);
 	}
 	
 	//output the complete HTML
