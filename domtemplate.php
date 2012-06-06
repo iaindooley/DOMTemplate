@@ -8,9 +8,7 @@ class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	private $keep_prolog = false;
 	
-	public function __construct ($inputString, $NS='', $NS_URI='') {
-		//get just the template text to begin with
-		$xml = $inputString;
+	public function __construct ($xml, $NS='', $NS_URI='') {
 		//does this file have an XML prolog? if so, we’ll keep it as-is in the output
 		if (substr_compare ($xml, '<?xml', 0, 4, true) === 0) $this->keep_prolog = true;
 		
