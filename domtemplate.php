@@ -284,6 +284,7 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 	}
 	
 	public function next () {
+		$this->DOMNode = $this->template->cloneNode (true);
 		//when we insert the newly templated item, use it as the reference node for the next item and so on.
 		$this->refNode = ($this->refNode->parentNode->lastChild === $this->DOMNode)
 			? $this->refNode->parentNode->appendChild ($this->DOMNode)
@@ -292,7 +293,6 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 			: $this->refNode->parentNode->insertBefore ($this->DOMNode, $this->refNode->nextSibling)
 		;
 		//reset the template
-		$this->DOMNode = $this->template->cloneNode (true);
 		return $this;
 	}
 }
