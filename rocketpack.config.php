@@ -1,2 +1,2 @@
 <?php
-    RocketPack\Install::package('DOMTemplate',array(0,0,0));
+    RocketPack\Install::package('https://github.com/iaindooley/DOMTemplate',array(0,0,0));
