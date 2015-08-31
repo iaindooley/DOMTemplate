@@ -213,7 +213,7 @@ class DOMTemplateNode {
 			case $node->nodeType == XML_ATTRIBUTE_NODE:
 				$node->nodeValue = htmlspecialchars ($value, ENT_QUOTES); break;
 				
-			//if the text is to be inserted as HTML that will be inluded into the output
+			//if the text is to be inserted as HTML that will be included into the output
 			case $asHTML:
 				$frag = $node->ownerDocument->createDocumentFragment ();
 				//if the HTML string is not valid XML, it won’t work!
